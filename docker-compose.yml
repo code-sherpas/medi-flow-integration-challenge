@@ -1,0 +1,31 @@
+services:
+  medication-catalog:
+    build: ./infra/medication-catalog
+    ports:
+      - "3050:3050"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3050/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  message-broker:
+    build: ./infra/message-broker
+    ports:
+      - "3060:3060"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3060/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  insurance-authorization:
+    build: ./infra/insurance-authorization
+    ports:
+      - "3070:3070"
+    environment:
+      - MESSAGE_BROKER_URL=http://message-broker:3060
+      - CALLBACK_URL=http://insurance-authorization:3070/webhook
+    depends_on:
+      message-broker:
+        condition: service_healthy
