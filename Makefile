@@ -1,25 +1,25 @@
-.PHONY: infra infra-down install dev run build clean logs catalog-health broker-health reset-catalog
+.PHONY: deps deps-down install dev run build clean logs catalog-health broker-health reset-catalog
 
-# ─── Infrastructure ──────────────────────────────────────────────────────────
+# ─── Dependencies ────────────────────────────────────────────────────────────
 
-## Start all infrastructure services (Medication Catalog, Message Broker, Insurance Authorization)
-infra:
+## Start all dependency services (Medication Catalog, Message Broker, Insurance Authorization)
+deps:
 	docker compose up --build -d
 	@echo ""
-	@echo "Infrastructure is starting..."
+	@echo "Dependencies are starting..."
 	@echo "  Medication Catalog:       http://localhost:3050"
 	@echo "  Message Broker:           http://localhost:3060"
 	@echo "  Insurance Authorization:  http://localhost:3070"
 	@echo ""
 	@echo "Waiting for services to be healthy..."
 	@docker compose wait medication-catalog message-broker 2>/dev/null || sleep 5
-	@echo "Infrastructure is ready!"
+	@echo "Dependencies are ready!"
 
-## Stop all infrastructure services
-infra-down:
+## Stop all dependency services
+deps-down:
 	docker compose down
 
-## Show infrastructure logs
+## Show dependency logs
 logs:
 	docker compose logs -f
 

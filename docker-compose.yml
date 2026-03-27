@@ -1,6 +1,6 @@
 services:
   medication-catalog:
-    build: ./infra/medication-catalog
+    build: ./dependencies/medication-catalog
     ports:
       - "3050:3050"
     healthcheck:
@@ -10,7 +10,7 @@ services:
       retries: 5
 
   message-broker:
-    build: ./infra/message-broker
+    build: ./dependencies/message-broker
     ports:
       - "3060:3060"
     healthcheck:
@@ -20,7 +20,7 @@ services:
       retries: 5
 
   insurance-authorization:
-    build: ./infra/insurance-authorization
+    build: ./dependencies/insurance-authorization
     ports:
       - "3070:3070"
     environment:

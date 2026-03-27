@@ -69,7 +69,7 @@ HTTP status codes, the exact format of error responses, and any additional endpo
 
 > **Note on persistence:** You don't need a real database. Storing prescriptions in in-memory data structures (Maps, arrays, objects) is perfectly valid and is not penalized in the evaluation. What matters is how you model and organize data, not where you store it.
 
-## 4. Provided Infrastructure
+## 4. Provided Dependencies
 
 ### 4.1 Medication Catalog (Mock REST API)
 
@@ -269,17 +269,17 @@ At the end of the hour, your repository must contain:
 ### Prerequisites
 
 - [Docker](https://docs.docker.com/get-docker/) and Docker Compose
-- [Node.js](https://nodejs.org/) (v20 or later)
+- [Node.js](https://nodejs.org/) v24 (see `.nvmrc`)
 
 ### Quick Start
 
-**1. Start the infrastructure** (Medication Catalog, Message Broker, Insurance Authorization):
+**1. Start the dependencies** (Medication Catalog, Message Broker, Insurance Authorization):
 
 ```bash
-make infra
+make deps
 ```
 
-**2. Verify the infrastructure is running:**
+**2. Verify the dependencies are running:**
 
 ```bash
 make catalog-health   # Should return { "status": "ok" }
@@ -294,21 +294,21 @@ make dev    # Runs with ts-node (development mode)
 make run    # Builds and runs (production mode)
 ```
 
-**4. When you're done, stop infrastructure:**
+**4. When you're done, stop dependencies:**
 
 ```bash
-make infra-down
+make deps-down
 ```
 
 ### Useful Commands
 
 | Command | Description |
 |---|---|
-| `make infra` | Start all infrastructure services |
-| `make infra-down` | Stop all infrastructure services |
+| `make deps` | Start all dependency services |
+| `make deps-down` | Stop all dependency services |
 | `make dev` | Run prescription service in dev mode |
 | `make run` | Build and run prescription service |
-| `make logs` | Follow infrastructure logs |
+| `make logs` | Follow dependency logs |
 | `make reset-catalog` | Reset medication stock to initial values |
 | `make catalog-health` | Check Medication Catalog status |
 | `make broker-health` | Check Message Broker status |
@@ -316,18 +316,23 @@ make infra-down
 ### Project Structure
 
 ```
-prescription-service/
-├── infra/                  # Mock Catalog + Broker + Insurance (DO NOT MODIFY)
-├── src/
-│   ├── index.ts           # Entry point (Express app)
-│   ├── routes/            # HTTP endpoints
-│   ├── services/          # Business logic
-│   ├── clients/           # HTTP clients for Catalog and Broker
-│   ├── models/            # Domain types and interfaces
-│   └── config.ts          # Configuration
-├── tests/
-├── tsconfig.json
-├── package.json
+.
+├── dependencies/                # Mock Catalog + Broker + Insurance (DO NOT MODIFY)
+│   ├── medication-catalog/
+│   ├── message-broker/
+│   └── insurance-authorization/
+├── prescription-service/        # YOUR CODE HERE
+│   ├── src/
+│   │   ├── index.ts             # Entry point (Express app)
+│   │   ├── routes/              # HTTP endpoints
+│   │   ├── services/            # Business logic
+│   │   ├── clients/             # HTTP clients for Catalog and Broker
+│   │   ├── models/              # Domain types and interfaces
+│   │   └── config.ts            # Configuration
+│   ├── tests/
+│   ├── tsconfig.json
+│   └── package.json
+├── docker-compose.yml
 ├── Makefile
 └── README.md
 ```
