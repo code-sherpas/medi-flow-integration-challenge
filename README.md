@@ -213,7 +213,9 @@ Result message (`authorization.results`):
 
 ### 4.3 Callback Contract (Webhook)
 
-When your service subscribes to the `authorization.results` topic, you provide a `callback_url` that you define (e.g., `http://localhost:3000/webhooks/authorization`). The broker will send an HTTP POST to that URL whenever there's a new authorization result.
+When your service subscribes to the `authorization.results` topic, you provide a `callback_url` that you define (e.g., `http://host.docker.internal:3000/webhooks/authorization`). The broker will send an HTTP POST to that URL whenever there's a new authorization result.
+
+> **Important:** Since the broker runs inside Docker and your service runs on the host, use `host.docker.internal` instead of `localhost` in the callback URL. This hostname resolves to the host machine from within Docker containers.
 
 Request your endpoint will receive:
 ```
