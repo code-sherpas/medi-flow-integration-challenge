@@ -1,4 +1,6 @@
-.PHONY: deps deps-down install dev run build clean logs catalog-health broker-health reset-catalog
+.PHONY: deps deps-down logs catalog-health broker-health reset-catalog \
+       install-typescript dev-typescript run-typescript build-typescript clean-typescript \
+       dev-java run-java build-java clean-java
 
 # ─── Dependencies ────────────────────────────────────────────────────────────
 
@@ -23,23 +25,45 @@ deps-down:
 logs:
 	docker compose logs -f
 
-# ─── Prescription Service ────────────────────────────────────────────────────
+# ─── Prescription Service (Node.js + TypeScript) ────────────────────────────
 
-## Install dependencies for the prescription service
-install:
-	cd prescription-service && npm install
+## Install dependencies for the TypeScript prescription service
+install-typescript:
+	cd prescription-service-typescript && npm install
 
-## Run the prescription service in development mode (with auto-reload)
-dev: install
-	cd prescription-service && npm run dev
+## Run the TypeScript prescription service in development mode (with auto-reload)
+dev-typescript: install-typescript
+	cd prescription-service-typescript && npm run dev
 
-## Build the prescription service
-build: install
-	cd prescription-service && npm run build
+## Build the TypeScript prescription service
+build-typescript: install-typescript
+	cd prescription-service-typescript && npm run build
 
-## Run the prescription service (production build)
-run: build
-	cd prescription-service && npm start
+## Run the TypeScript prescription service (production build)
+run-typescript: build-typescript
+	cd prescription-service-typescript && npm start
+
+## Remove TypeScript build artifacts
+clean-typescript:
+	rm -rf prescription-service-typescript/dist prescription-service-typescript/node_modules
+
+# ─── Prescription Service (Java + Spring Boot) ─────────────────────────────
+
+## Run the Java prescription service in development mode
+dev-java:
+	cd prescription-service-java && ./gradlew bootRun
+
+## Build the Java prescription service
+build-java:
+	cd prescription-service-java && ./gradlew bootJar
+
+## Run the Java prescription service (production build)
+run-java: build-java
+	java -jar prescription-service-java/build/libs/prescription-service-1.0.0.jar
+
+## Remove Java build artifacts
+clean-java:
+	cd prescription-service-java && ./gradlew clean
 
 # ─── Utilities ───────────────────────────────────────────────────────────────
 
@@ -54,7 +78,3 @@ broker-health:
 ## Reset the Medication Catalog stock to initial values
 reset-catalog:
 	@curl -s -X POST http://localhost:3050/medications/reset | python3 -m json.tool 2>/dev/null || echo "Medication Catalog is not running"
-
-## Remove build artifacts
-clean:
-	rm -rf prescription-service/dist prescription-service/node_modules

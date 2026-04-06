@@ -7,7 +7,7 @@
 | **Duration** | 60 minutes |
 | **Level** | Mid-Senior |
 | **Format** | Hands-on development |
-| **Stack** | Node.js + TypeScript |
+| **Stack** | Node.js + TypeScript **or** Java + Spring Boot |
 
 ---
 
@@ -260,9 +260,9 @@ We're not looking for a perfect solution. We're looking for clear signals of how
 
 At the end of the hour, your repository must contain:
 
-- Source code for the Prescription Processing service in TypeScript.
+- Source code for the Prescription Processing service.
 - README.md with: instructions to run, design decisions (including status codes and chosen patterns), known limitations, and what you'd do with more time.
-- The service must start with a single command (e.g., `make run`, `docker-compose up`, `npm start`).
+- The service must start with a single command (e.g., `make run-typescript`, `make run-java`, `./gradlew bootRun`).
 
 > **Note on the README:** The README is an integral part of the evaluation. We want to understand your thought process: what tradeoffs you made, what patterns you chose and why, how you decided on status codes, and what you'd change if you had a week instead of an hour. A good README can compensate for incomplete features.
 
@@ -271,7 +271,12 @@ At the end of the hour, your repository must contain:
 ### Prerequisites
 
 - [Docker](https://docs.docker.com/get-docker/) and Docker Compose
+
+**For the Node.js + TypeScript stack:**
 - [Node.js](https://nodejs.org/) v24 (see `.nvmrc`)
+
+**For the Java + Spring Boot stack:**
+- [Java 21](https://adoptium.net/) (JDK)
 
 ### Quick Start
 
@@ -290,10 +295,20 @@ make broker-health    # Should return { "status": "ok" }
 
 **3. Install dependencies and run your service:**
 
+**Node.js + TypeScript:**
+
 ```bash
-make dev    # Runs with ts-node (development mode)
+make dev-typescript    # Runs with ts-node (development mode)
 # or
-make run    # Builds and runs (production mode)
+make run-typescript    # Builds and runs (production mode)
+```
+
+**Java + Spring Boot:**
+
+```bash
+make dev-java    # Runs with ./gradlew bootRun (development mode)
+# or
+make run-java    # Builds JAR and runs (production mode)
 ```
 
 **4. When you're done, stop dependencies:**
@@ -308,8 +323,10 @@ make deps-down
 |---|---|
 | `make deps` | Start all dependency services |
 | `make deps-down` | Stop all dependency services |
-| `make dev` | Run prescription service in dev mode |
-| `make run` | Build and run prescription service |
+| `make dev-typescript` | Run prescription service in dev mode (Node.js) |
+| `make run-typescript` | Build and run prescription service (Node.js) |
+| `make dev-java` | Run prescription service in dev mode (Java) |
+| `make run-java` | Build and run prescription service (Java) |
 | `make logs` | Follow dependency logs |
 | `make reset-catalog` | Reset medication stock to initial values |
 | `make catalog-health` | Check Medication Catalog status |
@@ -317,13 +334,15 @@ make deps-down
 
 ### Project Structure
 
+**Node.js + TypeScript:**
+
 ```
 .
 ├── dependencies/                # Mock Catalog + Broker + Insurance (DO NOT MODIFY)
 │   ├── medication-catalog/
 │   ├── message-broker/
 │   └── insurance-authorization/
-├── prescription-service/        # YOUR CODE HERE
+├── prescription-service-typescript/  # YOUR CODE HERE
 │   ├── src/
 │   │   ├── index.ts             # Entry point (Express app)
 │   │   ├── routes/              # HTTP endpoints
@@ -340,3 +359,33 @@ make deps-down
 ```
 
 **Stack:** Node.js + TypeScript + Express + Fetch API (built-in)
+
+**Java + Spring Boot:**
+
+```
+.
+├── dependencies/                # Mock Catalog + Broker + Insurance (DO NOT MODIFY)
+│   ├── medication-catalog/
+│   ├── message-broker/
+│   └── insurance-authorization/
+├── prescription-service-java/   # YOUR CODE HERE
+│   ├── src/main/java/com/mediflow/prescription/
+│   │   ├── PrescriptionServiceApplication.java   # Entry point
+│   │   ├── controller/          # REST controllers
+│   │   ├── service/             # Business logic
+│   │   ├── client/              # HTTP clients for Catalog and Broker
+│   │   ├── model/               # Domain classes
+│   │   └── config/              # Configuration
+│   ├── src/main/resources/
+│   │   └── application.properties
+│   ├── src/test/java/
+│   ├── build.gradle
+│   ├── settings.gradle
+│   ├── gradlew                  # Gradle wrapper (no Gradle install needed)
+│   └── gradlew.bat
+├── docker-compose.yml
+├── Makefile
+└── README.md
+```
+
+**Stack:** Java 21 + Spring Boot 3.4 + RestClient + Gradle

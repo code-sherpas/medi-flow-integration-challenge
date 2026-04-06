@@ -138,3 +138,10 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 .idea
+
+# Java / Gradle
+.gradle/
+build/
+*.class
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
